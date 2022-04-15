@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {addTodo} from '../../redux/actions';
@@ -16,6 +23,18 @@ const TodoList = () => {
     setTodoItem('');
   };
 
+  const listSeparator = () => {
+    return <View style={{height: 1, margin: 5, backgroundColor: 'grey'}} />;
+  };
+
+  const renderTodoList = (item, index) => {
+    return (
+      <View>
+        <Text>{item.title}</Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.inputView}>
@@ -30,6 +49,12 @@ const TodoList = () => {
           <Icon name={'pluscircle'} color="green" size={30} />
         </TouchableOpacity>
       </View>
+      <FlatList
+        data={todoList}
+        renderItem={({item, index}) => renderTodoList(item, index)}
+        keyExtractor={(item, index) => index.toString()}
+        ItemSeparatorComponent={listSeparator}
+      />
     </View>
   );
 };

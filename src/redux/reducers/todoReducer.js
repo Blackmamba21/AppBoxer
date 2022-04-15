@@ -1,4 +1,4 @@
-import {ADD_TODO} from '../constants';
+import {ADD_TODO, VIEW_TODO} from '../constants';
 
 const initialState = {
   todoList: [],
@@ -14,6 +14,12 @@ const todoReducer = (state = initialState, action) => {
       return {
         ...state,
         todoList: addList,
+      };
+    case VIEW_TODO:
+      let viewItem = action.item;
+      return {
+        ...state,
+        todoList: viewItem,
       };
 
     default:

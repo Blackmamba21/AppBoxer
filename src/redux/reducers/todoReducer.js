@@ -1,4 +1,4 @@
-import {ADD_TODO, VIEW_TODO} from '../constants';
+import {ADD_TODO, DELETE_TODO, VIEW_TODO} from '../constants';
 
 const initialState = {
   todoList: [],
@@ -20,6 +20,15 @@ const todoReducer = (state = initialState, action) => {
       return {
         ...state,
         todoList: viewItem,
+      };
+
+    case DELETE_TODO:
+      let deleteItem = action.item.id;
+      let list = state.todoList.filter((item) => item.id != deleteItem);
+
+      return {
+        ...state,
+        todoList: list,
       };
 
     default:

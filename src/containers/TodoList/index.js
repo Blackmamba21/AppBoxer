@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import {addTodo} from '../../redux/actions';
+import {addTodo, deleteTodo} from '../../redux/actions';
 const TodoList = () => {
   const [todoItem, setTodoItem] = React.useState('');
   const todoList = useSelector((state) => state.todoReducer.todoList);
@@ -23,14 +23,21 @@ const TodoList = () => {
     setTodoItem('');
   };
 
+  const deleteItem = (item) => {
+    dispatch(deleteTodo(item));
+  };
+
   const listSeparator = () => {
     return <View style={{height: 1, margin: 5, backgroundColor: 'grey'}} />;
   };
 
   const renderTodoList = (item, index) => {
     return (
-      <View>
+      <View style={styles.listTopView}>
         <Text>{item.title}</Text>
+        <TouchableOpacity onPress={() => deleteItem(item)}>
+          <Icon name={'delete'} color="green" size={30} />
+        </TouchableOpacity>
       </View>
     );
   };
@@ -74,5 +81,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 5,
     borderRadius: 5,
+  },
+  listTopView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: 5,
   },
 });

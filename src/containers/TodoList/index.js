@@ -9,22 +9,32 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import {addTodo, deleteTodo} from '../../redux/actions';
+import {addTodo, deleteTodo, updateTodo} from '../../redux/actions';
 const TodoList = () => {
   const [todoItem, setTodoItem] = React.useState('');
+  const [updateItemText, setUpdateItem] = React.useState('');
+  const [editItemId, setEditItem] = React.useState(null);
   const todoList = useSelector((state) => state.todoReducer.todoList);
   const dispatch = useDispatch();
-  console.log('todoList', todoList);
 
   const addItem = () => {
     let listItem = {id: todoList.length + 1, title: todoItem};
-    console.log('listItem', listItem);
     dispatch(addTodo(listItem));
     setTodoItem('');
   };
 
   const deleteItem = (item) => {
     dispatch(deleteTodo(item));
+  };
+
+  const edit = (item) => {
+    setEditItem(item.id);
+  };
+
+  const updateItem = () => {
+    let listItem = {id: editItemId, title: updateItemText};
+    dispatch(updateTodo(listItem));
+    setEditItem(null);
   };
 
   const listSeparator = () => {
@@ -34,10 +44,36 @@ const TodoList = () => {
   const renderTodoList = (item, index) => {
     return (
       <View style={styles.listTopView}>
-        <Text>{item.title}</Text>
-        <TouchableOpacity onPress={() => deleteItem(item)}>
-          <Icon name={'delete'} color="green" size={30} />
-        </TouchableOpacity>
+        <View style={{flex: 3}}>
+          {editItemId && editItemId == item.id ? (
+            <TextInput
+              onChangeText={(text) => setUpdateItem(text)}
+              placeholder={'Enter Text Here'}
+              autoFocus={true}
+              value={updateItemText}
+            />
+          ) : (
+            <Text>{item.title}</Text>
+          )}
+        </View>
+        <View style={styles.buttonView}>
+          {editItemId && editItemId == item.id ? (
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => updateItem(item)}>
+              <Text style={styles.text}>Update</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => edit(item)}>
+              <Text style={styles.text}>Edit</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={() => deleteItem(item)}>
+            <Icon name={'delete'} color="green" size={30} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -88,5 +124,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: 5,
+  },
+  buttonStyle: {
+    backgroundColor: 'green',
+    borderRadius: 5,
+    padding: 5,
+    minWidth: 60,
+    alignItems: 'center',
+  },
+  text: {
+    color: 'white',
+  },
+  buttonView: {
+    flex: 1,
+
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
 });
